@@ -44,7 +44,6 @@ class RegistrationController: UIViewController {
     
     private let usernameTextField: UITextField = {
         let tf = Utilities().textField(withPlaceholder: "Usuario")
-        tf.isSecureTextEntry = true
         return tf
     }()
     
@@ -70,6 +69,7 @@ class RegistrationController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        setupTarget()
     }
     
     // MARK: - Selectors
@@ -77,9 +77,10 @@ class RegistrationController: UIViewController {
     @objc func handleRegistration() {
         guard let email = emailTextField.text else {return}
         guard let password = passwordTextField.text else {return}
+        guard let username = usernameTextField.text else { return }
  
-        let credentials = AuthCredentials(email: email, password: password)
-        AuthService.shared.registerUser(credentials: credentials, completion: {(error) in
+        let credentials = AuthCredentials(email: email, password: password, username: username)
+        AuthService.shared.registerUser(credentials: credentials, completion: {(error, ref) in
             print("DEBUG: Sign up successful..")
             print("DEBUG: Handle update user interface here..")
             guard let window = UIApplication.shared.windows.first(where: {$0.isKeyWindow}) else {return}
@@ -104,7 +105,8 @@ class RegistrationController: UIViewController {
                     emailContainerView,
                  passwordContainerView,
                  usernameContainerView,
-                 registrationButton])
+                 registrationButton
+                ])
 
         stack.axis = .vertical
         stack.spacing = 20

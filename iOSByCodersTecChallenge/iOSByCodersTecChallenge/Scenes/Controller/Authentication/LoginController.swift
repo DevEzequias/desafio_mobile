@@ -56,7 +56,6 @@ class LoginController: UIViewController {
     
     private let dontHaveAccountButton: UIButton = {
         let button = Utilities().attributedButton("Crie sua conta agora", " Sign Up")
-        
         return button
     }()
     
@@ -80,17 +79,17 @@ class LoginController: UIViewController {
         guard let email = emailTextField.text else {return}
         guard let password = passwordTextField.text else {return}
 
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+        AuthService.shared.logUserIn(withEmail: email, password: password) { (result, error) in
             if let error = error {
                 print("DEBUG: Error logging in \(error.localizedDescription)")
                 return
             }
-
-            guard let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow}) else {return}
+            
+            print("DEBUG: Successful log in...")
+            
+            guard let window = UIApplication.shared.windows.first(where: {$0.isKeyWindow}) else {return}
             guard let tab = window.rootViewController as? MainTabController else {return}
-
             tab.autheticatiteUserAndConfigureUI()
-
             self.dismiss(animated: true, completion: nil)
         }
     }

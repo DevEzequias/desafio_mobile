@@ -8,7 +8,11 @@
 import UIKit
 import FirebaseAuth
 
-class MainTabController: UIViewController {
+final class MainTabController: UIViewController {
+    
+    //MARK: - Properties
+    
+    private var user: User?
     
     // MARK: - Lifecycle
     
@@ -16,11 +20,19 @@ class MainTabController: UIViewController {
         super.viewDidLoad()
         
         //logUserOut()
-        view.backgroundColor = .darkGray
+        view.backgroundColor = .red
         autheticatiteUserAndConfigureUI()
     }
     
     // MARK: API
+    
+    func fetchUser() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        UserService.shared.fetchUser(uid: uid) { user in
+            self.user = user
+
+        }
+    }
     
     func autheticatiteUserAndConfigureUI() {
         if Auth.auth().currentUser == nil {
